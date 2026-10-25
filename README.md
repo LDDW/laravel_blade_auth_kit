@@ -7,6 +7,72 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Docker Compose (dev)
+
+This project ships a **dev-only** `docker-compose.yaml` with MySQL, Redis, and Mailpit. The Laravel app itself still runs on the host (`composer dev`).
+
+### Prerequisites
+
+- Docker Engine + Compose v2
+- A local `.env` (copy from `.env.example` if needed)
+
+### Start / stop
+
+```bash
+docker compose up -d
+docker compose ps
+docker compose down
+```
+
+Data is stored in named Docker volumes (`auth_kit_*_data`). To wipe everything including data:
+
+```bash
+docker compose down -v
+```
+
+### `.env` configuration
+
+| Variable | Role | Example |
+| --- | --- | --- |
+| `DB_CONNECTION` | Driver | `mysql` |
+| `DB_HOST` | Host (app on host → container ports) | `127.0.0.1` |
+| `DB_PORT` | MySQL port | `3306` |
+| `DB_DATABASE` | Database name | `laravel` |
+| `DB_USERNAME` | App DB user | `laravel` |
+| `DB_PASSWORD` | App DB password (**required**) | strong secret |
+| `DB_ROOT_PASSWORD` | MySQL root password for Compose (**required**, not used by Laravel) | strong secret |
+| `FORWARD_DB_PORT` | Host → container MySQL port | `3306` |
+| `REDIS_HOST` | Redis host | `127.0.0.1` |
+| `REDIS_PORT` | Redis port | `6379` |
+| `REDIS_PASSWORD` | Redis password (**required**) | strong secret |
+| `FORWARD_REDIS_PORT` | Host → container Redis port | `6379` (use another port if busy, e.g. `6380`) |
+| `MAIL_MAILER` | Mailer for Mailpit | `smtp` |
+| `MAIL_HOST` | Mailpit SMTP | `127.0.0.1` |
+| `MAIL_PORT` | Mailpit SMTP port | `1025` |
+| `FORWARD_MAILPIT_SMTP_PORT` | Host → Mailpit SMTP | `1025` |
+| `FORWARD_MAILPIT_UI_PORT` | Host → Mailpit UI | `8025` |
+
+Keep `REDIS_PORT` equal to `FORWARD_REDIS_PORT` when the app runs on the host.
+
+`REDIS_CLIENT=phpredis` expects the PHP extension `redis`. Install it on the host (e.g. `pecl install redis`) before using Redis for cache/queue/session.
+
+Mailpit UI: [http://127.0.0.1:8025](http://127.0.0.1:8025)
+
+### Security notes (even in local)
+
+- All published ports bind to `127.0.0.1` only (not the LAN).
+- MySQL and Redis refuse to start if passwords are missing from `.env`.
+- Redis requires a password (`--requirepass`); containers use `no-new-privileges`.
+- Do not commit `.env`. Change the placeholder passwords from `.env.example`.
+- These services are for development; do not use this Compose file as-is in production.
+
+### First MySQL setup
+
+```bash
+php artisan key:generate
+php artisan migrate
+```
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

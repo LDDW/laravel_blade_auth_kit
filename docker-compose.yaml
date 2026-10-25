@@ -1,0 +1,76 @@
+# !!!!! Dev-only !!!!!
+# Services: MySQL, Redis, Mailpit.
+
+name: auth_kit
+
+services:
+    mysql:
+        image: mysql:8.4
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE:-laravel}
+            MYSQL_USER: ${DB_USERNAME:-laravel}
+            MYSQL_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Set DB_ROOT_PASSWORD in .env}
+        command:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+        ports:
+            - "127.0.0.1:${FORWARD_DB_PORT:-3306}:3306"
+        volumes:
+            - mysql_data:/var/lib/mysql
+        security_opt:
+            - no-new-privileges:true
+        healthcheck:
+            test:
+                [
+                    "CMD-SHELL",
+                    'mysqladmin ping -h 127.0.0.1 -uroot -p"$$MYSQL_ROOT_PASSWORD" --silent',
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+            start_period: 30s
+
+    redis:
+        image: redis:7.4-alpine
+        restart: unless-stopped
+        environment:
+            REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+        command:
+            ["sh", "-c", 'exec redis-server --requirepass "$$REDIS_PASSWORD"']
+        ports:
+            - "127.0.0.1:${FORWARD_REDIS_PORT:-6379}:6379"
+        volumes:
+            - redis_data:/data
+        security_opt:
+            - no-new-privileges:true
+        healthcheck:
+            test:
+                [
+                    "CMD-SHELL",
+                    'REDISCLI_AUTH="$$REDIS_PASSWORD" redis-cli ping | grep -q PONG',
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 5s
+
+    mailpit:
+        image: axllent/mailpit:v1.27
+        restart: unless-stopped
+        ports:
+            - "127.0.0.1:${FORWARD_MAILPIT_UI_PORT:-8025}:8025"
+            - "127.0.0.1:${FORWARD_MAILPIT_SMTP_PORT:-1025}:1025"
+        security_opt:
+            - no-new-privileges:true
+        healthcheck:
+            test: ["CMD", "/mailpit", "readyz"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+            start_period: 5s
+
+volumes:
+    mysql_data:
+    redis_data:
