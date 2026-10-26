@@ -9,7 +9,7 @@
 
 ## Docker Compose (dev)
 
-This project ships a **dev-only** `docker-compose.yaml` with MySQL, Redis, and Mailpit. The Laravel app itself still runs on the host (`composer dev`).
+This project ships a **dev-only** `docker-compose.yaml` with MySQL, Redis, Mailpit, and a queue worker. The Laravel app itself still runs on the host (`composer dev`); the worker container mounts this repo and processes `QUEUE_CONNECTION=database` jobs.
 
 ### Prerequisites
 

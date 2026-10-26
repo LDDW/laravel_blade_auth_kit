@@ -174,7 +174,10 @@ return [
             // 'window' => 0,
         ]),
         Features::passkeys([
-            'confirmPassword' => true,
+            // Confirming the password before create/delete blocks the WebAuthn
+            // ceremony (redirect → no browser prompt → nothing saved). Keep false
+            // so registration can complete in one step; the user is already authed.
+            'confirmPassword' => false,
         ]),
     ],
 

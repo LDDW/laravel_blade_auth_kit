@@ -28,6 +28,10 @@ class ProfileController extends Controller
             'recovery-codes-revealed',
         ], true) && $user->two_factor_confirmed_at;
 
+        if (Features::canManagePasskeys()) {
+            $user->load('passkeys');
+        }
+
         return view('profile.show', [
             'user' => $user,
             'sessions' => $this->sessions($request),

@@ -1,5 +1,6 @@
 # !!!!! Dev-only !!!!!
-# Services: MySQL, Redis, Mailpit.
+# Services: MySQL, Redis, Mailpit, queue worker.
+# App PHP still runs on the host; the worker mounts this repo and talks to Compose services.
 
 name: auth_kit
 
@@ -70,6 +71,33 @@ services:
             timeout: 5s
             retries: 5
             start_period: 5s
+
+    queue:
+        build:
+            context: .
+            dockerfile: docker/queue/Dockerfile
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - .:/var/www/html
+        env_file:
+            - .env
+        environment:
+            DB_HOST: mysql
+            DB_PORT: 3306
+            REDIS_HOST: redis
+            REDIS_PORT: 6379
+            MAIL_MAILER: smtp
+            MAIL_HOST: mailpit
+            MAIL_PORT: 1025
+            QUEUE_CONNECTION: database
+        depends_on:
+            mysql:
+                condition: service_healthy
+            mailpit:
+                condition: service_healthy
+        security_opt:
+            - no-new-privileges:true
 
 volumes:
     mysql_data:

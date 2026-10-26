@@ -35,6 +35,14 @@
                 <x-section-border />
             @endif
 
+            @if (Laravel\Fortify\Features::canManagePasskeys())
+                <div class="mt-10 sm:mt-0">
+                    @include('profile.partials.manage-passkeys-form')
+                </div>
+
+                <x-section-border />
+            @endif
+
             <div class="mt-10 sm:mt-0">
                 @include('profile.partials.logout-other-browser-sessions-form')
             </div>

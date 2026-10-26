@@ -19,6 +19,10 @@ Route::middleware([
 
     Route::get('/user/profile', [ProfileController::class, 'show'])->name('profile.show');
 
+    Route::get('/user/passkeys/confirm-access', function () {
+        return redirect()->route('profile.show');
+    })->middleware('password.confirm')->name('passkeys.confirm-access');
+
     Route::post('/user/two-factor-recovery-codes/reveal', [ProfileController::class, 'showRecoveryCodes'])
         ->middleware('password.confirm')
         ->name('profile.two-factor.recovery-codes');
