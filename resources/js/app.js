@@ -1,4 +1,5 @@
 import './bootstrap';
+import './theme';
 
 const csrfHeaders = () => {
     const headers = {
