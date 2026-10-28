@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Support\UserAgent;
+use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Laravel\Fortify\Actions\ConfirmPassword;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 
-class ProfileController extends Controller
+class UserController extends Controller
 {
     /**
      * Affiche la page de profil.
@@ -34,7 +33,6 @@ class ProfileController extends Controller
 
         return view('profile.show', [
             'user' => $user,
-            'sessions' => $this->sessions($request),
             'showingRecoveryCodes' => $showingRecoveryCodes ? $user->recoveryCodes() : [],
             'confirmsTwoFactorAuthentication' => Features::optionEnabled(
                 Features::twoFactorAuthentication(),
@@ -52,34 +50,32 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return Collection<int, object>
+     * Supprime le compte de l'utilisateur authentifié.
      */
-    protected function sessions(Request $request)
+    public function destroy(Request $request, StatefulGuard $guard): RedirectResponse
     {
-        if (config('session.driver') !== 'database') {
-            return collect();
+        $confirmed = app(ConfirmPassword::class)(
+            $guard,
+            $request->user(),
+            $request->password
+        );
+
+        if (! $confirmed) {
+            throw ValidationException::withMessages([
+                'password' => __('The password is incorrect.'),
+            ]);
         }
 
-        return collect(
-            DB::connection(config('session.connection'))
-                ->table(config('session.table', 'sessions'))
-                ->where('user_id', $request->user()->getAuthIdentifier())
-                ->orderByDesc('last_activity')
-                ->get()
-        )->map(function (object $session) use ($request): object {
-            $agent = new UserAgent($session->user_agent ?? '');
+        $user = $request->user();
 
-            return (object) [
-                'agent' => [
-                    'is_desktop' => $agent->isDesktop(),
-                    'platform' => $agent->platform(),
-                    'browser' => $agent->browser(),
-                ],
-                'ip_address' => $session->ip_address,
-                'is_current_device' => $session->id === $request->session()->getId(),
-                'last_active' => Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
-            ];
-        });
+        $guard->logout();
+
+        $user->delete();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
     }
 
     /**

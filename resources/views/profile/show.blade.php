@@ -44,12 +44,6 @@
             @endif
 
             <div class="mt-10 sm:mt-0">
-                @include('profile.partials.logout-other-browser-sessions-form')
-            </div>
-
-            <x-section-border />
-
-            <div class="mt-10 sm:mt-0">
                 @include('profile.partials.delete-user-form')
             </div>
         </div>

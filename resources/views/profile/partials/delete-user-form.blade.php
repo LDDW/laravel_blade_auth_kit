@@ -26,7 +26,7 @@
             <x-slot name="content">
                 {{ __('Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
 
-                <form method="POST" action="{{ route('current-user.destroy') }}" id="delete-user-form" class="mt-4">
+                <form method="POST" action="{{ route('user.destroy') }}" id="delete-user-form" class="mt-4">
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="password_confirmation_context" value="confirm-user-deletion">

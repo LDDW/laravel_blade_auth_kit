@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\CurrentUserController;
-use App\Http\Controllers\OtherBrowserSessionsController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,19 +15,16 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 
-    Route::get('/user/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/user/profile', [UserController::class, 'show'])->name('profile.show');
 
     Route::get('/user/passkeys/confirm-access', function () {
         return redirect()->route('profile.show');
     })->middleware('password.confirm')->name('passkeys.confirm-access');
 
-    Route::post('/user/two-factor-recovery-codes/reveal', [ProfileController::class, 'showRecoveryCodes'])
+    Route::post('/user/two-factor-recovery-codes/reveal', [UserController::class, 'showRecoveryCodes'])
         ->middleware('password.confirm')
         ->name('profile.two-factor.recovery-codes');
 
-    Route::delete('/user/other-browser-sessions', [OtherBrowserSessionsController::class, 'destroy'])
-        ->name('other-browser-sessions.destroy');
-
-    Route::delete('/user', [CurrentUserController::class, 'destroy'])
-        ->name('current-user.destroy');
+    Route::delete('/user', [UserController::class, 'destroy'])
+        ->name('user.destroy');
 });
