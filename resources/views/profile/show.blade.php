@@ -27,7 +27,7 @@
                 <x-section-border />
             @endif
 
-            @if (Laravel\Fortify\Features::canManageTwoFactorAuthentication())
+            @if (Laravel\Fortify\Features::canManageTwoFactorAuthentication() && $user->hasPassword())
                 <div class="mt-10 sm:mt-0">
                     @include('profile.partials.two-factor-authentication-form')
                 </div>

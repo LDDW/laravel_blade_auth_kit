@@ -90,7 +90,9 @@ return [
     |
     */
 
-    'management_middleware' => ['password.confirm'],
+    // Password confirm blocks WebAuthn for OAuth users (password = null).
+    // The user is already authenticated; last-login-method is enforced on delete.
+    'management_middleware' => [],
 
     /*
     |--------------------------------------------------------------------------

@@ -54,19 +54,21 @@ class UserController extends Controller
      */
     public function destroy(Request $request, StatefulGuard $guard): RedirectResponse
     {
-        $confirmed = app(ConfirmPassword::class)(
-            $guard,
-            $request->user(),
-            $request->password
-        );
-
-        if (! $confirmed) {
-            throw ValidationException::withMessages([
-                'password' => __('The password is incorrect.'),
-            ]);
-        }
-
         $user = $request->user();
+
+        if ($user->hasPassword()) {
+            $confirmed = app(ConfirmPassword::class)(
+                $guard,
+                $user,
+                $request->password
+            );
+
+            if (! $confirmed) {
+                throw ValidationException::withMessages([
+                    'password' => __('The password is incorrect.'),
+                ]);
+            }
+        }
 
         $guard->logout();
 

@@ -24,15 +24,21 @@
             </x-slot>
 
             <x-slot name="content">
-                {{ __('Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+                @if ($user->hasPassword())
+                    {{ __('Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+                @else
+                    {{ __('Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted.') }}
+                @endif
 
                 <form method="POST" action="{{ route('user.destroy') }}" id="delete-user-form" class="mt-4">
                     @csrf
                     @method('DELETE')
                     <input type="hidden" name="password_confirmation_context" value="confirm-user-deletion">
 
-                    <x-input type="password" name="password" class="mt-1 block w-3/4" autocomplete="current-password" placeholder="{{ __('Password') }}" />
-                    <x-input-error for="password" class="mt-2" />
+                    @if ($user->hasPassword())
+                        <x-input type="password" name="password" class="mt-1 block w-3/4" autocomplete="current-password" placeholder="{{ __('Password') }}" />
+                        <x-input-error for="password" class="mt-2" />
+                    @endif
                 </form>
             </x-slot>
 

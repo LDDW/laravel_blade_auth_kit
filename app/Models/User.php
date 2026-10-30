@@ -16,7 +16,7 @@ use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'github_id'])]
 #[Hidden(['password', 'remember_token', 'two_factor_recovery_codes', 'two_factor_secret'])]
 class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 {
@@ -34,6 +34,18 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function hasPassword(): bool
+    {
+        return ! is_null($this->password);
+    }
+
+    public function loginMethodsCount(): int
+    {
+        return (int) $this->hasPassword()
+            + (int) filled($this->github_id)
+            + $this->passkeys()->count();
     }
 
     public function sendEmailVerificationNotification(): void

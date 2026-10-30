@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Controllers\OAuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/auth/redirect', [OAuthController::class, 'redirect'])->name('auth.redirect');
+Route::get('/auth/callback', [OAuthController::class, 'callback'])->name('auth.callback');
 
 Route::middleware([
     'auth',
