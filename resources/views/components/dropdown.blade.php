@@ -1,4 +1,4 @@
-@props(['align' => 'right', 'width' => '48', 'contentClasses' => 'py-1 bg-white dark:bg-gray-700'])
+@props(['align' => 'right', 'width' => '48', 'contentClasses' => 'bg-popover text-popover-foreground'])
 
 @php
 $alignmentClasses = match ($align) {
@@ -18,8 +18,8 @@ $widthClass = match ((string) $width) {
         {{ $trigger }}
     </div>
 
-    <div data-dropdown-content class="hidden absolute z-50 mt-2 {{ $widthClass }} rounded-md shadow-lg {{ $alignmentClasses }}">
-        <div class="rounded-md ring-1 ring-black ring-opacity-5 {{ $contentClasses }}">
+    <div data-dropdown-content class="hidden absolute z-50 mt-2 {{ $widthClass }} rounded-md border shadow-md {{ $alignmentClasses }} {{ $contentClasses }}">
+        <div class="py-1">
             {{ $content }}
         </div>
     </div>

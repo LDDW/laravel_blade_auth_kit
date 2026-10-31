@@ -1,52 +1,34 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h1 class="truncate text-sm font-semibold tracking-tight">
             {{ __('Profile') }}
-        </h2>
+        </h1>
     </x-slot>
 
-    <div>
-        <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-            @if (Laravel\Fortify\Features::canUpdateProfileInformation())
-                @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::emailVerification()) && ! $user->hasVerifiedEmail())
-                    <form id="resend-verification" method="POST" action="{{ route('verification.send') }}" class="hidden">
-                        @csrf
-                    </form>
-                @endif
-
-                @include('profile.partials.update-profile-information-form')
-
-                <x-section-border />
+    <div class="mx-auto flex w-full max-w-3xl flex-col gap-10">
+        @if (Laravel\Fortify\Features::canUpdateProfileInformation())
+            @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::emailVerification()) && ! $user->hasVerifiedEmail())
+                <form id="resend-verification" method="POST" action="{{ route('verification.send') }}" class="hidden">
+                    @csrf
+                </form>
             @endif
 
-            @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::updatePasswords()))
-                <div class="mt-10 sm:mt-0">
-                    @include('profile.partials.update-password-form')
-                </div>
+            @include('profile.partials.update-profile-information-form')
+        @endif
 
-                <x-section-border />
-            @endif
+        @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::updatePasswords()))
+            @include('profile.partials.update-password-form')
+        @endif
 
-            @if (Laravel\Fortify\Features::canManageTwoFactorAuthentication() && $user->hasPassword())
-                <div class="mt-10 sm:mt-0">
-                    @include('profile.partials.two-factor-authentication-form')
-                </div>
+        @if (Laravel\Fortify\Features::canManageTwoFactorAuthentication() && $user->hasPassword())
+            @include('profile.partials.two-factor-authentication-form')
+        @endif
 
-                <x-section-border />
-            @endif
+        @if (Laravel\Fortify\Features::canManagePasskeys())
+            @include('profile.partials.manage-passkeys-form')
+        @endif
 
-            @if (Laravel\Fortify\Features::canManagePasskeys())
-                <div class="mt-10 sm:mt-0">
-                    @include('profile.partials.manage-passkeys-form')
-                </div>
-
-                <x-section-border />
-            @endif
-
-            <div class="mt-10 sm:mt-0">
-                @include('profile.partials.delete-user-form')
-            </div>
-        </div>
+        @include('profile.partials.delete-user-form')
     </div>
 
     @if ($errors->has('password') && old('password_confirmation_context'))

@@ -5,39 +5,21 @@
 
 @if ($message)
     @php
-        $bg = match ($style) {
-            'danger' => 'bg-red-700',
-            'warning' => 'bg-yellow-500',
-            'success' => 'bg-indigo-500',
-            default => 'bg-gray-500',
-        };
-        $iconBg = match ($style) {
-            'danger' => 'bg-red-600',
-            'warning' => 'bg-yellow-600',
-            'success' => 'bg-indigo-600',
-            default => 'bg-gray-600',
+        $classes = match ($style) {
+            'danger' => 'border-destructive/30 bg-destructive/10 text-destructive',
+            'warning' => 'border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-200',
+            default => 'border-border bg-muted text-foreground',
         };
     @endphp
 
-    <div id="app-banner" class="{{ $bg }}">
-        <div class="max-w-screen-xl mx-auto py-2 px-3 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between flex-wrap">
-                <div class="w-0 flex-1 flex items-center min-w-0">
-                    <span class="flex p-2 rounded-lg {{ $iconBg }}">
-                        <svg class="size-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </span>
-                    <p class="ms-3 font-medium text-sm text-white truncate">{{ $message }}</p>
-                </div>
-                <div class="shrink-0 sm:ms-3">
-                    <button type="button" class="-me-1 flex p-2 rounded-md focus:outline-none sm:-me-2 transition hover:bg-black/10" data-dismiss-banner aria-label="Dismiss">
-                        <svg class="size-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
+    <div id="app-banner" class="border-b {{ $classes }}">
+        <div class="flex items-center justify-between gap-3 px-4 py-2.5 sm:px-6">
+            <p class="min-w-0 truncate text-sm font-medium">{{ $message }}</p>
+            <button type="button" class="rounded-md p-1 hover:bg-foreground/5" data-dismiss-banner aria-label="{{ __('Dismiss') }}">
+                <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </button>
         </div>
     </div>
 @endif

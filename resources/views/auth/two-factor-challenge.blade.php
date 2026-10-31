@@ -1,43 +1,43 @@
 <x-guest-layout>
     <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+        <x-slot name="title">{{ __('Two-factor authentication') }}</x-slot>
 
-        <div data-two-factor-challenge>
-            <div class="mb-4 text-sm text-gray-600 dark:text-gray-400" data-recovery-hide>
+        <div data-two-factor-challenge class="grid gap-4">
+            <p class="text-sm text-muted-foreground" data-recovery-hide>
                 {{ __('Please confirm access to your account by entering the authentication code provided by your authenticator application.') }}
-            </div>
+            </p>
 
-            <div class="mb-4 text-sm text-gray-600 dark:text-gray-400 hidden" data-recovery-show>
+            <p class="hidden text-sm text-muted-foreground" data-recovery-show>
                 {{ __('Please confirm access to your account by entering one of your emergency recovery codes.') }}
-            </div>
+            </p>
 
-            <x-validation-errors class="mb-4" />
+            <x-validation-errors />
 
-            <form method="POST" action="{{ route('two-factor.login') }}">
+            <form method="POST" action="{{ route('two-factor.login') }}" class="grid gap-4">
                 @csrf
 
-                <div class="mt-4" data-recovery-hide>
+                <div class="grid gap-2" data-recovery-hide>
                     <x-label for="code" value="{{ __('Code') }}" />
-                    <x-input id="code" class="block mt-1 w-full" type="text" inputmode="numeric" name="code" autofocus autocomplete="one-time-code" />
+                    <x-input id="code" type="text" inputmode="numeric" name="code" autofocus autocomplete="one-time-code" />
                 </div>
 
-                <div class="mt-4 hidden" data-recovery-show>
-                    <x-label for="recovery_code" value="{{ __('Recovery Code') }}" />
-                    <x-input id="recovery_code" class="block mt-1 w-full" type="text" name="recovery_code" autocomplete="one-time-code" />
+                <div class="hidden" data-recovery-show>
+                    <div class="grid gap-2">
+                        <x-label for="recovery_code" value="{{ __('Recovery Code') }}" />
+                        <x-input id="recovery_code" type="text" name="recovery_code" autocomplete="one-time-code" />
+                    </div>
                 </div>
 
-                <div class="flex items-center justify-end mt-4">
-                    <button type="button" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 underline cursor-pointer" data-recovery-hide data-toggle-recovery>
+                <div class="grid gap-3">
+                    <button type="button" class="justify-self-start text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline" data-recovery-hide data-toggle-recovery>
                         {{ __('Use a recovery code') }}
                     </button>
 
-                    <button type="button" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 underline cursor-pointer hidden" data-recovery-show data-toggle-recovery>
+                    <button type="button" class="hidden justify-self-start text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline" data-recovery-show data-toggle-recovery>
                         {{ __('Use an authentication code') }}
                     </button>
 
-                    <x-button class="ms-4">
+                    <x-button class="w-full">
                         {{ __('Log in') }}
                     </x-button>
                 </div>

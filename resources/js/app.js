@@ -193,6 +193,19 @@ const initPasskeyManagement = () => {
     }
 };
 
+const setSidebar = (open) => {
+    const root = document.querySelector('[data-shell]');
+    if (!root) {
+        return;
+    }
+
+    root.classList.toggle('is-open', open);
+    document.querySelector('[data-nav-toggle]')?.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+    const lockScroll = open && window.matchMedia('(max-width: 767px)').matches;
+    document.documentElement.classList.toggle('overflow-hidden', lockScroll);
+};
+
 document.addEventListener('click', (event) => {
     const openModal = event.target.closest('[data-open-modal]');
     if (openModal) {
@@ -206,7 +219,7 @@ document.addEventListener('click', (event) => {
         return;
     }
 
-    if (event.target.closest('[data-modal-backdrop]')) {
+    if (event.target.closest('[data-modal-backdrop]') && !event.target.closest('[data-modal-panel]')) {
         event.target.closest('dialog')?.close();
     }
 
@@ -225,11 +238,14 @@ document.addEventListener('click', (event) => {
         document.querySelectorAll('[data-dropdown-content]').forEach((el) => el.classList.add('hidden'));
     }
 
-    const navToggle = event.target.closest('[data-nav-toggle]');
-    if (navToggle) {
-        const menu = document.querySelector('[data-nav-menu]');
-        menu?.classList.toggle('hidden');
-        document.querySelectorAll('[data-nav-icon]').forEach((icon) => icon.classList.toggle('hidden'));
+    if (event.target.closest('[data-nav-toggle]')) {
+        const root = document.querySelector('[data-shell]');
+        setSidebar(!root?.classList.contains('is-open'));
+        return;
+    }
+
+    if (event.target.closest('[data-nav-close]')) {
+        setSidebar(false);
     }
 
     const toggleRecovery = event.target.closest('[data-toggle-recovery]');
@@ -240,6 +256,12 @@ document.addEventListener('click', (event) => {
         });
         const visible = root?.querySelector('[data-recovery-show]:not(.hidden) input, [data-recovery-hide]:not(.hidden) input');
         visible?.focus();
+    }
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        setSidebar(false);
     }
 });
 

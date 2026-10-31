@@ -1,22 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h1 class="truncate text-sm font-semibold tracking-tight">
             {{ __('Dashboard') }}
-        </h2>
+        </h1>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
-                    <h1 class="mt-4 text-2xl font-medium text-gray-900 dark:text-white">
-                        {{ __('Welcome!') }}
-                    </h1>
-                    <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                        {{ __('You are logged in.') }}
-                    </p>
-                </div>
-            </div>
+    <div class="mx-auto w-full max-w-3xl">
+        <div class="rounded-xl border bg-card p-6 text-card-foreground shadow-sm">
+            <h2 class="text-lg font-semibold tracking-tight">{{ __('Welcome!') }}</h2>
+            <p class="mt-1.5 text-sm text-muted-foreground">{{ __('You are logged in.') }}</p>
         </div>
     </div>
 </x-app-layout>

@@ -25,27 +25,55 @@
         </script>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link href="https://fonts.bunny.net/css?family=inter:400,500,600&display=swap" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased">
+    <body>
         <x-banner />
 
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div data-shell class="min-h-svh">
+            <div
+                data-nav-overlay
+                data-nav-close
+                class="fixed inset-0 z-40 bg-black/50 opacity-0 pointer-events-none transition-opacity sidebar-open:pointer-events-auto sidebar-open:opacity-100 md:hidden"
+            ></div>
+
             @include('layouts.navigation')
 
-            @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
+            <div class="flex min-h-svh flex-col md:ps-64">
+                <header class="sticky top-0 z-30 flex h-14 items-center gap-3 border-b bg-background px-4 md:px-6">
+                    <button
+                        type="button"
+                        data-nav-toggle
+                        class="inline-flex size-9 items-center justify-center rounded-md hover:bg-accent md:hidden"
+                        aria-expanded="false"
+                        aria-controls="app-sidebar"
+                        aria-label="{{ __('Open menu') }}"
+                    >
+                        <svg class="size-5 sidebar-open:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                        <svg class="hidden size-5 sidebar-open:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
 
-            <main>
-                {{ $slot }}
-            </main>
+                    @isset($header)
+                        <div class="min-w-0 flex-1">
+                            {{ $header }}
+                        </div>
+                    @else
+                        <div class="flex-1"></div>
+                    @endisset
+
+                    <x-theme-toggle />
+                </header>
+
+                <main class="flex-1 p-4 md:p-8">
+                    {{ $slot }}
+                </main>
+            </div>
         </div>
     </body>
 </html>

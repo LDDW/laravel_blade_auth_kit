@@ -1,8 +1,25 @@
+@php
+    $theme = request()->cookie('theme', 'system');
+    if (! in_array($theme, ['light', 'dark', 'system'], true)) {
+        $theme = 'system';
+    }
+@endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    class="{{ $theme === 'dark' ? 'dark' : '' }}"
+    data-theme="{{ $theme }}"
+>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <script>
+            if (document.documentElement.dataset.theme === 'system' &&
+                matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.classList.add('dark');
+            }
+        </script>
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -21,6 +38,7 @@
         <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
             @if (Route::has('login'))
                 <nav class="flex items-center justify-end gap-4">
+                    <x-theme-toggle />
                     @auth
                         <a
                             href="{{ url('/dashboard') }}"

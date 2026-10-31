@@ -15,12 +15,10 @@ $maxWidthClass = [
 
 <dialog
     data-modal="{{ $name }}"
-    class="z-50 m-0 min-h-full min-w-full overflow-y-auto bg-transparent backdrop:bg-transparent p-0 open:flex open:items-start open:justify-center"
+    class="m-0 h-dvh max-h-none w-full max-w-none border-0 bg-transparent p-0 backdrop:bg-transparent"
 >
-    <div class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50">
-        <div data-modal-backdrop class="fixed inset-0 bg-gray-500 dark:bg-gray-900 opacity-75"></div>
-
-        <div class="relative mb-6 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto {{ $maxWidthClass }}">
+    <div data-modal-backdrop class="flex min-h-full items-center justify-center bg-black/80 p-4">
+        <div data-modal-panel class="w-full {{ $maxWidthClass }} overflow-hidden rounded-xl border bg-card text-card-foreground shadow-lg">
             {{ $slot }}
         </div>
     </div>

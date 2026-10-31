@@ -1,6 +1,7 @@
 import Alpine from 'alpinejs';
 
 Alpine.data('themeToggle', () => ({
+    open: false,
     theme: document.documentElement.dataset.theme || 'system',
 
     set(value) {
